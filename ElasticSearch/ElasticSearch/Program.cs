@@ -39,14 +39,14 @@ namespace ElasticSearch
                 LNAme=employee.LNAme,
                 Address=employee.Address,
             };
-            client.Index<Employee>(jsonData, x => x.Index("Employee").Type("mydata").Id(employee.Id).Refresh(Elasticsearch.Net.Refresh.True));
+            client.Index<Employee>(jsonData, x => x.Index("employee").Type("mydata").Id(employee.Id).Refresh(Elasticsearch.Net.Refresh.True));
 
         }
 
         public static List<Employee> Search(string word)
         {
             List<Employee> employees = new List<Employee>();
-            var response = client.Search<Employee>(x => x.Index("employee").Type("mydata").Query(q => q.Term(t => t.Field("id").Value(word))));
+            var response = client.Search<Employee>(x => x.Index("employee").Type("mydata").Query(q => q.Match(t => t.Field("id").Query(word))));
             foreach (var hit in response.Hits)
             {
                 var employee = new Employee();
